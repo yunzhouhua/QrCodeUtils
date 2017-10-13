@@ -55,16 +55,14 @@
             android:layout_height="279dp"
             android:layout_below="@+id/rl_title"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/qr_code_bg">
+            android:background="@drawable/zxing_code_bg">
 
             <ImageView
                 android:id="@+id/capture_scan_line"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/scan" />
+                android:background="@drawable/zxing_scan_line" />
 
         </RelativeLayout>
 
@@ -88,7 +86,7 @@
             android:layout_alignTop="@id/capture_mask_bottom"
             android:background="@drawable/shadow"
             android:gravity="center"
-            android:visibility="gone"
+            android:visibility="visible"
             android:text="@string/jwstr_select_pic_from_album"
             android:textColor="#1dcaf5"
             android:textSize="18sp" />

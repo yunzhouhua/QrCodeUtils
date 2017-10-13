@@ -44,6 +44,20 @@
     <ImageView
         android:id="@+id/img_qrcode"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:src="@drawable/zxing_code_bg"
+        android:tint="@android:color/black"/>
+
+    <Button
+        android:id="@+id/scan_qr_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="识别二维码" />
+
+    <TextView
+        android:id="@+id/scan_qr_code_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="二维码扫描结果:"/>
 
 </LinearLayout>

@@ -34,12 +34,25 @@ public class DecodeBitmap {
         if (TextUtils.isEmpty(path)) {
             return null;
         }
+        Bitmap scanBitmap = BitmapFactory.decodeFile(path);
+        return scanningImage(scanBitmap);
+    }
+
+    /**
+     * 扫描Bitmap
+     * @param bitmap
+     * @return
+     */
+    public static Result scanningImage(Bitmap bitmap){
+        if(bitmap == null){
+            return null;
+        }
         Hashtable<DecodeHintType, String> hints = new Hashtable<>();
         hints.put(DecodeHintType.CHARACTER_SET, "utf-8"); // 设置二维码内容的编码
-        Bitmap scanBitmap = BitmapFactory.decodeFile(path);
-        int[] intArray = new int[scanBitmap.getWidth() * scanBitmap.getHeight()];
-        scanBitmap.getPixels(intArray, 0, scanBitmap.getWidth(), 0, 0, scanBitmap.getWidth(), scanBitmap.getHeight());
-        RGBLuminanceSource source = new RGBLuminanceSource(scanBitmap.getWidth(), scanBitmap.getHeight(), intArray);
+
+        int[] intArray = new int[bitmap.getWidth() * bitmap.getHeight()];
+        bitmap.getPixels(intArray, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
+        RGBLuminanceSource source = new RGBLuminanceSource(bitmap.getWidth(), bitmap.getHeight(), intArray);
         BinaryBitmap bitmap1 = new BinaryBitmap(new HybridBinarizer(source));
         Reader reader = new MultiFormatReader();
         try {

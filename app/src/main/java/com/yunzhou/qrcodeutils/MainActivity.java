@@ -11,13 +11,16 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.zxing.Result;
 import com.yunzhou.qrcodelib.zxing.QRCodeManager;
 import com.yunzhou.qrcodelib.zxing.activity.CaptureActivity;
+import com.yunzhou.qrcodelib.zxing.decode.DecodeBitmap;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     private TextView mQrResultView;
     private ImageView mQrCodeView;
+    private TextView mScanResultView;
 
     private Bitmap mBitmap;
 
@@ -28,10 +31,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mQrResultView = (TextView) findViewById(R.id.qr_code_result);
         mQrCodeView = (ImageView) findViewById(R.id.img_qrcode);
+        mScanResultView = (TextView) findViewById(R.id.scan_qr_code_result);
 
         findViewById(R.id.start_qr_scan).setOnClickListener(this);
         findViewById(R.id.create).setOnClickListener(this);
         findViewById(R.id.create_logo).setOnClickListener(this);
+        findViewById(R.id.scan_qr_code).setOnClickListener(this);
 
     }
 
@@ -46,6 +51,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.create_logo:
                 createQrCodeWithLogo();
+                break;
+            case R.id.scan_qr_code:
+                if(mBitmap != null) {
+                    Result result = DecodeBitmap.scanningImage(mBitmap);
+                    String codeResult = DecodeBitmap.parseReuslt(result.toString());
+                    mScanResultView.setText("二维码扫描结果:" + codeResult);
+                }
                 break;
         }
     }
