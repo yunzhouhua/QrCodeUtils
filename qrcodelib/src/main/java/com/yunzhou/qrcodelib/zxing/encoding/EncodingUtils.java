@@ -1,6 +1,8 @@
 package com.yunzhou.qrcodelib.zxing.encoding;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
 import com.google.zxing.BarcodeFormat;
@@ -17,6 +19,9 @@ import java.util.Map;
  * 二维码生成工具类
  */
 public class EncodingUtils {
+
+    //允许logo最大是100x100
+    private static final int LOGO_MAX_SIZE = 100;
 
     /**
      * 创建二维码
@@ -103,4 +108,45 @@ public class EncodingUtils {
         }
         return bitmap;
     }
+
+    /**
+     * 创建二维码
+     *
+     * @param content   content
+     * @param widthPix  widthPix
+     * @param heightPix heightPix
+     * @return 二维码
+     */
+    public static Bitmap createQRCode(String content, int widthPix, int heightPix){
+        return createQRCode(content, widthPix, heightPix, null);
+    }
+
+    public static Bitmap createQRCode(Context context, String content, int widthPix, int heightPix, int resId){
+        Bitmap logoBitmap = null;
+        /**
+         * 避免图片过大导致过高的内存消耗，这边对大图进行了压缩操作
+         */
+        try {
+            BitmapFactory.Options opts = new BitmapFactory.Options();
+            opts.inJustDecodeBounds = true;
+            BitmapFactory.decodeResource(context.getResources(), resId, opts);
+
+            int inSampleSize = 1;
+            if(opts.outWidth > LOGO_MAX_SIZE || opts.outHeight > LOGO_MAX_SIZE){
+                if(opts.outWidth > opts.outHeight){
+                    inSampleSize = Math.round(opts.outHeight / LOGO_MAX_SIZE);
+                }else{
+                    inSampleSize = Math.round(opts.outWidth / LOGO_MAX_SIZE);
+                }
+            }
+            opts.inJustDecodeBounds = false;
+            opts.inSampleSize = inSampleSize;
+            logoBitmap = BitmapFactory.decodeResource(context.getResources(), resId, opts);
+        }catch (Exception e){
+            e.printStackTrace();
+            logoBitmap = null;
+        }
+        return createQRCode(content, widthPix, heightPix, logoBitmap);
+    }
+
 }

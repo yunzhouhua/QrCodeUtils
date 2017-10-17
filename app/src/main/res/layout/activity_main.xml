@@ -44,9 +44,7 @@
     <ImageView
         android:id="@+id/img_qrcode"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:src="@drawable/zxing_code_bg"
-        android:tint="@android:color/black"/>
+        android:layout_height="wrap_content"/>
 
     <Button
         android:id="@+id/scan_qr_code"

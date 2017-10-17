@@ -38,9 +38,11 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.zxing.Result;
 import com.yunzhou.qrcodelib.R;
+import com.yunzhou.qrcodelib.zxing.IScanQRCode;
 import com.yunzhou.qrcodelib.zxing.camera.CameraManager;
 import com.yunzhou.qrcodelib.zxing.decode.DecodeThread;
 import com.yunzhou.qrcodelib.zxing.utils.BeepManager;
@@ -61,11 +63,9 @@ import java.lang.reflect.Field;
  */
 
 public class CaptureActivity extends Activity implements
-        SurfaceHolder.Callback, View.OnClickListener {
+        SurfaceHolder.Callback, IScanQRCode, View.OnClickListener {
 
     private static final String TAG = CaptureActivity.class.getSimpleName();
-    public static final int RESULT_MULLT = 5;
-    private static final int CODE_GALLERY_REQUEST = 101;
 
     public static final String SCAN_TITLE = "scan_title";
     public static final String SCAN_TITLE_COLOR = "scan_title_color";
@@ -101,14 +101,6 @@ public class CaptureActivity extends Activity implements
 
     private Rect mCropRect = null;
     private boolean isHasSurface = false;
-
-    public Handler getHandler() {
-        return handler;
-    }
-
-    public CameraManager getCameraManager() {
-        return cameraManager;
-    }
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -244,28 +236,6 @@ public class CaptureActivity extends Activity implements
     }
 
     /**
-     * A valid barcode has been found, so give an indication of success and show
-     * the results.
-     *
-     * @param rawResult The contents of the barcode.
-     * @param bundle    The extras
-     */
-    public void handleDecode(Result rawResult, Bundle bundle) {
-        inactivityTimer.onActivity();
-        if(mNeedBeep){
-            beepManager.playBeepSoundAndVibrate();
-        }
-        Intent resultIntent = new Intent();
-        bundle.putInt("width", mCropRect.width());
-        bundle.putInt("height", mCropRect.height());
-        bundle.putString("result", rawResult.getText());
-        resultIntent.putExtras(bundle);
-        this.setResult(RESULT_OK, resultIntent);
-        CaptureActivity.this.finish();
-
-    }
-
-    /**
      * 扫描设备二维码成功
      *
      * @param rawResult
@@ -310,25 +280,27 @@ public class CaptureActivity extends Activity implements
 
     private void displayFrameworkBugMessageAndExit() {
         // camera error
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.zxing_prompt));
-        builder.setMessage(getString(R.string.zxing_camera_error));
-        builder.setPositiveButton(getString(R.string.zxing_confirm), new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
-            }
-
-        });
-        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                finish();
-            }
-        });
-        builder.show();
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setTitle(getString(R.string.zxing_prompt));
+//        builder.setMessage(getString(R.string.zxing_camera_error));
+//        builder.setPositiveButton(getString(R.string.zxing_confirm), new DialogInterface.OnClickListener() {
+//
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                finish();
+//            }
+//
+//        });
+//        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+//
+//            @Override
+//            public void onCancel(DialogInterface dialog) {
+//                finish();
+//            }
+//        });
+//        builder.show();
+        Toast.makeText(this, "相机初始化异常", Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     public void restartPreviewAfterDelay(long delayMS) {
@@ -337,8 +309,42 @@ public class CaptureActivity extends Activity implements
         }
     }
 
+    @Override
     public Rect getCropRect() {
         return mCropRect;
+    }
+
+    @Override
+    public CameraManager getCameraManager() {
+        return cameraManager;
+    }
+
+    @Override
+    public Handler getHandler() {
+        return handler;
+    }
+
+    /**
+     * A valid barcode has been found, so give an indication of success and show
+     * the results.
+     *
+     * @param rawResult The contents of the barcode.
+     * @param bundle    The extras
+     */
+    @Override
+    public void handleDecode(Result rawResult, Bundle bundle) {
+        inactivityTimer.onActivity();
+        if(mNeedBeep){
+            beepManager.playBeepSoundAndVibrate();
+        }
+        Intent resultIntent = new Intent();
+        bundle.putInt("width", mCropRect.width());
+        bundle.putInt("height", mCropRect.height());
+        bundle.putString("result", rawResult.getText());
+        resultIntent.putExtras(bundle);
+        this.setResult(RESULT_OK, resultIntent);
+        CaptureActivity.this.finish();
+
     }
 
     /**

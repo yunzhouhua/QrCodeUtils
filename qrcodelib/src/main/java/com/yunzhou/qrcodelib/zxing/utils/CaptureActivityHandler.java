@@ -24,7 +24,7 @@ import android.os.Message;
 
 import com.google.zxing.Result;
 import com.yunzhou.qrcodelib.R;
-import com.yunzhou.qrcodelib.zxing.activity.CaptureActivity;
+import com.yunzhou.qrcodelib.zxing.IScanQRCode;
 import com.yunzhou.qrcodelib.zxing.camera.CameraManager;
 import com.yunzhou.qrcodelib.zxing.decode.DecodeThread;
 
@@ -36,12 +36,12 @@ import com.yunzhou.qrcodelib.zxing.decode.DecodeThread;
  */
 public class CaptureActivityHandler extends Handler {
 
-    private final CaptureActivity activity;
+    private final IScanQRCode activity;
     private final DecodeThread decodeThread;
     private final CameraManager cameraManager;
     private State state;
 
-    public CaptureActivityHandler(CaptureActivity activity, CameraManager cameraManager, int decodeMode) {
+    public CaptureActivityHandler(IScanQRCode activity, CameraManager cameraManager, int decodeMode) {
         this.activity = activity;
         decodeThread = new DecodeThread(activity, decodeMode);
         decodeThread.start();
@@ -71,8 +71,8 @@ public class CaptureActivityHandler extends Handler {
             cameraManager.requestPreviewFrame(decodeThread.getHandler(), R.id.zxing_decode);
 
         } else if (message.what == R.id.zxing_return_scan_result) {
-            activity.setResult(Activity.RESULT_OK, (Intent) message.obj);
-            activity.finish();
+            ((Activity)activity).setResult(Activity.RESULT_OK, (Intent) message.obj);
+            ((Activity)activity).finish();
 
         }
     }

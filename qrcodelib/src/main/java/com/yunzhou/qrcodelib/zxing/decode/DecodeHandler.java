@@ -32,18 +32,18 @@ import com.google.zxing.ReaderException;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 import com.yunzhou.qrcodelib.R;
-import com.yunzhou.qrcodelib.zxing.activity.CaptureActivity;
+import com.yunzhou.qrcodelib.zxing.IScanQRCode;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
 
 public class DecodeHandler extends Handler {
 
-    private final CaptureActivity activity;
+    private final IScanQRCode activity;
     private final MultiFormatReader multiFormatReader;
     private boolean running = true;
 
-    public DecodeHandler(CaptureActivity activity, Map<DecodeHintType, Object> hints) {
+    public DecodeHandler(IScanQRCode activity, Map<DecodeHintType, Object> hints) {
         multiFormatReader = new MultiFormatReader();
         multiFormatReader.setHints(hints);
         this.activity = activity;

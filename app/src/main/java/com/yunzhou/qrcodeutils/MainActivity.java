@@ -1,5 +1,6 @@
 package com.yunzhou.qrcodeutils;
 
+import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -7,15 +8,18 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.zxing.Result;
-import com.yunzhou.qrcodelib.zxing.QRCodeManager;
+import com.tbruyelle.rxpermissions.RxPermissions;
 import com.yunzhou.qrcodelib.zxing.activity.CaptureActivity;
 import com.yunzhou.qrcodelib.zxing.decode.DecodeBitmap;
+import com.yunzhou.qrcodelib.zxing.encoding.EncodingUtils;
+
+import rx.functions.Action1;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -25,10 +29,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private Bitmap mBitmap;
 
+    RxPermissions rxPermissions;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        rxPermissions = new RxPermissions(this);
 
         mQrResultView = (TextView) findViewById(R.id.qr_code_result);
         mQrCodeView = (ImageView) findViewById(R.id.img_qrcode);
@@ -71,19 +79,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         paint.setColor(Color.BLUE);
         canvas.drawCircle(50, 50, 50, paint);
 
-        mBitmap = QRCodeManager.getInstance().createQRCode("二维码内容", 300, 300, bitmap);
+        //mBitmap = QRCodeManager.getInstance().createQRCode("二维码内容", 300, 300, bitmap);
+        mBitmap = EncodingUtils.createQRCode(this, "二维码内容", 300, 300, R.mipmap.ic_launcher);
         mQrCodeView.setImageBitmap(mBitmap);
     }
 
     private void createQrCode() {
-        mBitmap = QRCodeManager.getInstance().createQRCode("二维码内容", 300, 300);
+        mBitmap = EncodingUtils.createQRCode("二维码内容", 300, 300);
         mQrCodeView.setImageBitmap(mBitmap);
     }
 
     private void scan4QRCode() {
-        //打开扫描界面扫描条形码或二维码
-        Intent openCameraIntent = new Intent(MainActivity.this, CaptureActivity.class);
-        startActivityForResult(openCameraIntent, 0);
+        rxPermissions
+                .request(Manifest.permission.CAMERA)
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        if(aBoolean){
+                            //打开扫描界面扫描条形码或二维码
+                            Intent openCameraIntent = new Intent(MainActivity.this, CaptureActivity.class);
+                            startActivityForResult(openCameraIntent, 0);
+                        }else{
+                            Toast.makeText(MainActivity.this, "请打开相机权限", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
     }
 
     @Override
