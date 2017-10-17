@@ -23,10 +23,10 @@
     <!--<item name="restart_preview" type="id"/>-->
     <!--<item name="return_scan_result" type="id"/>-->
 
-    <item name="jwstr_decode" type="id"/>
-    <item name="jwstr_decode_succeeded" type="id"/>
-    <item name="jwstr_quit" type="id"/>
-    <item name="jwstr_restart_preview" type="id"/>
-    <item name="jwstr_return_scan_result" type="id"/>
-    <item name="jwstr_decode_failed" type="id"/>
+    <item name="zxing_decode" type="id"/>
+    <item name="zxing_decode_succeeded" type="id"/>
+    <item name="zxing_quit" type="id"/>
+    <item name="zxing_restart_preview" type="id"/>
+    <item name="zxing_return_scan_result" type="id"/>
+    <item name="zxing_decode_failed" type="id"/>
 </resources>
