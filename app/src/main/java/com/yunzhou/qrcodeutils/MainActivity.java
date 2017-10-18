@@ -3,12 +3,14 @@ package com.yunzhou.qrcodeutils;
 import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,6 +19,7 @@ import com.google.zxing.Result;
 import com.tbruyelle.rxpermissions.RxPermissions;
 import com.yunzhou.qrcodelib.zxing.activity.CaptureActivity;
 import com.yunzhou.qrcodelib.zxing.decode.DecodeBitmap;
+import com.yunzhou.qrcodelib.zxing.decode.DecodeThread;
 import com.yunzhou.qrcodelib.zxing.encoding.EncodingUtils;
 
 import rx.functions.Action1;
@@ -26,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView mQrResultView;
     private ImageView mQrCodeView;
     private TextView mScanResultView;
+    private EditText mQrEditView;
 
     private Bitmap mBitmap;
 
@@ -41,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mQrResultView = (TextView) findViewById(R.id.qr_code_result);
         mQrCodeView = (ImageView) findViewById(R.id.img_qrcode);
         mScanResultView = (TextView) findViewById(R.id.scan_qr_code_result);
+        mQrEditView = (EditText) findViewById(R.id.qr_code_text);
 
         findViewById(R.id.start_qr_scan).setOnClickListener(this);
         findViewById(R.id.create).setOnClickListener(this);
@@ -80,12 +85,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         canvas.drawCircle(50, 50, 50, paint);
 
         //mBitmap = QRCodeManager.getInstance().createQRCode("二维码内容", 300, 300, bitmap);
-        mBitmap = EncodingUtils.createQRCode(this, "二维码内容", 300, 300, R.mipmap.ic_launcher);
+        mBitmap = EncodingUtils.createQRCode(this, mQrEditView.getText().toString(), 300, 300, R.mipmap.ic_launcher);
         mQrCodeView.setImageBitmap(mBitmap);
     }
 
     private void createQrCode() {
-        mBitmap = EncodingUtils.createQRCode("二维码内容", 300, 300);
+        mBitmap = EncodingUtils.createQRCode(mQrEditView.getText().toString(), 300, 300);
         mQrCodeView.setImageBitmap(mBitmap);
     }
 
@@ -112,7 +117,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (resultCode == RESULT_OK) {
             Bundle bundle = data.getExtras();
             String scanResult = bundle.getString("result");
+            byte[] byteResult = bundle.getByteArray(DecodeThread.BARCODE_BITMAP);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(byteResult, 0, byteResult.length);
             mQrResultView.setText(scanResult);
+            mQrCodeView.setImageBitmap(bitmap);
         }
     }
 }
