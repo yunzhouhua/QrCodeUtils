@@ -3,8 +3,11 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/QrCodeUtils.iml" filepath="$PROJECT_DIR$/QrCodeUtils.iml" />
+      <module fileurl="file://F:\githubProj\QrCodeUtils\QrCodeUtils.iml" filepath="F:\githubProj\QrCodeUtils\QrCodeUtils.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://F:\githubProj\QrCodeUtils\app\app.iml" filepath="F:\githubProj\QrCodeUtils\app\app.iml" />
       <module fileurl="file://$PROJECT_DIR$/qrcodelib/qrcodelib.iml" filepath="$PROJECT_DIR$/qrcodelib/qrcodelib.iml" />
+      <module fileurl="file://F:\githubProj\QrCodeUtils\qrcodelib\qrcodelib.iml" filepath="F:\githubProj\QrCodeUtils\qrcodelib\qrcodelib.iml" />
     </modules>
   </component>
 </project>

@@ -42,6 +42,8 @@ public class EncodingUtils {
             hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
             // 容错级别
             hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
+            // 设置二维码边距
+            hints.put(EncodeHintType.MARGIN, 0);
             // 图像数据转换，使用了矩阵转换
             BitMatrix bitMatrix = new QRCodeWriter().encode(content, BarcodeFormat.QR_CODE, widthPix,
                     heightPix, hints);
