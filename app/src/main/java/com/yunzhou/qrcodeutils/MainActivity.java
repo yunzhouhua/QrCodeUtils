@@ -42,14 +42,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         rxPermissions = new RxPermissions(this);
 
-        mQrResultView = (TextView) findViewById(R.id.qr_code_result);
-        mQrCodeView = (ImageView) findViewById(R.id.img_qrcode);
-        mScanResultView = (TextView) findViewById(R.id.scan_qr_code_result);
-        mQrEditView = (EditText) findViewById(R.id.qr_code_text);
+        mQrResultView = findViewById(R.id.qr_code_result);
+        mQrCodeView = findViewById(R.id.img_qrcode);
+        mScanResultView = findViewById(R.id.scan_qr_code_result);
+        mQrEditView = findViewById(R.id.qr_code_text);
 
         findViewById(R.id.start_qr_scan).setOnClickListener(this);
         findViewById(R.id.create).setOnClickListener(this);
         findViewById(R.id.create_logo).setOnClickListener(this);
+        findViewById(R.id.dm_create).setOnClickListener(this);
+        findViewById(R.id.dm_create_logo).setOnClickListener(this);
         findViewById(R.id.scan_qr_code).setOnClickListener(this);
 
     }
@@ -61,10 +63,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 scan4QRCode();
                 break;
             case R.id.create:
-                createQrCode();
+                createQrCode(1);
                 break;
             case R.id.create_logo:
-                createQrCodeWithLogo();
+                createQrCodeWithLogo(1);
+                break;
+            case R.id.dm_create:
+                createQrCode(2);
+                break;
+            case R.id.dm_create_logo:
+                createQrCodeWithLogo(2);
                 break;
             case R.id.scan_qr_code:
                 if(mBitmap != null) {
@@ -76,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void createQrCodeWithLogo() {
+    private void createQrCodeWithLogo(int flag) {
         Bitmap bitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -85,12 +93,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         canvas.drawCircle(50, 50, 50, paint);
 
         //mBitmap = QRCodeManager.getInstance().createQRCode("二维码内容", 300, 300, bitmap);
-        mBitmap = EncodingUtils.createQRCode(this, mQrEditView.getText().toString(), 300, 300, R.mipmap.ic_launcher);
+        if(flag == 1) {
+            mBitmap = EncodingUtils.createQRCode(this, mQrEditView.getText().toString(), 300, 300, R.mipmap.ic_launcher);
+        }else if(flag == 2){
+            mBitmap = EncodingUtils.createDataMatrix(this, mQrEditView.getText().toString(), 300, 300, R.mipmap.ic_launcher);
+        }
         mQrCodeView.setImageBitmap(mBitmap);
     }
 
-    private void createQrCode() {
-        mBitmap = EncodingUtils.createQRCode(mQrEditView.getText().toString(), 300, 300);
+    private void createQrCode(int flag) {
+        if(flag == 1) {
+            mBitmap = EncodingUtils.createQRCode(mQrEditView.getText().toString(), 300, 300);
+        }else if(flag == 2){
+            mBitmap = EncodingUtils.createDataMatrix(mQrEditView.getText().toString(), 300, 300);
+        }
         mQrCodeView.setImageBitmap(mBitmap);
     }
 
