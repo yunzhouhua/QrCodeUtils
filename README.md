@@ -65,13 +65,13 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 (3)Activity实现IScanQRCode,IScanQRCode中的四个方法，参照CaptureActivity对应的实现即可
 
-### 二.二维码生成
+### 二.QR格式二维码生成
 
 1.生成普通二维码
 
 ```java
 /*
- * 生成一个300*300内容为“二维码内容”的二维码
+ * 生成一个300*300内容为“二维码内容”的QR二维码
  */
 Bitmap mBitmap = EncodingUtils.createQRCode("二维码内容", 300, 300);
 ```
@@ -84,6 +84,29 @@ Bitmap mBitmap = EncodingUtils.createQRCode("二维码内容", 300, 300, bitmap)
 
 //资源Id形式生成
 Bitmap mBitmap = EncodingUtils.createQRCode(this, "二维码内容", 300, 300, R.mipmap.ic_launcher);
+```
+
+
+
+### 三.DataMatrix格式二维码生成
+
+1.生成普通二维码
+
+```java
+/*
+ * 生成一个300*300内容为“二维码内容”的DataMatrix二维码
+ */
+Bitmap mBitmap = EncodingUtils.createDataMatrix("二维码内容", 300, 300);
+```
+
+2.生成带Logo的二维码
+
+```java
+//Bitmap形式生成
+Bitmap mBitmap = EncodingUtils.createDataMatrix("二维码内容", 300, 300, bitmap);
+
+//资源Id形式生成
+Bitmap mBitmap = EncodingUtils.createDataMatrix(this, "二维码内容", 300, 300, R.mipmap.ic_launcher);
 ```
 
 
