@@ -17,6 +17,7 @@
 package com.yunzhou.qrcodelib.zxing.decode;
 
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.hardware.Camera.Size;
 import android.os.Bundle;
@@ -90,20 +91,20 @@ public class DecodeHandler extends Handler {
     private void decode(byte[] data, int width, int height) {
         Size size = activity.getCameraManager().getPreviewSize();
 
-        // 这里需要将获取的data翻转一下，因为相机默认拿的的横屏的数据
-        byte[] rotatedData = new byte[data.length];
-        for (int y = 0; y < size.height; y++) {
-            for (int x = 0; x < size.width; x++)
-                rotatedData[x * size.height + size.height - y - 1] = data[x + y * size.width];
-        }
-
-        // 宽高也要调整
-        int tmp = size.width;
-        size.width = size.height;
-        size.height = tmp;
+//        // 这里需要将获取的data翻转一下，因为相机默认拿的的横屏的数据
+//        byte[] rotatedData = new byte[data.length];
+//        for (int y = 0; y < size.height; y++) {
+//            for (int x = 0; x < size.width; x++)
+//                rotatedData[x * size.height + size.height - y - 1] = data[x + y * size.width];
+//        }
+//
+//        // 宽高也要调整
+//        int tmp = size.width;
+//        size.width = size.height;
+//        size.height = tmp;
 
         Result rawResult = null;
-        PlanarYUVLuminanceSource source = buildLuminanceSource(rotatedData, size.width, size.height);
+        PlanarYUVLuminanceSource source = buildLuminanceSource(data, size.width, size.height);
         if (source != null) {
             BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
             try {
@@ -149,8 +150,25 @@ public class DecodeHandler extends Handler {
             return null;
         }
         // Go ahead and assume it's YUV rather than die.
-        return new PlanarYUVLuminanceSource(data, width, height, rect.left, rect.top, rect.width(), rect
-                .height(), false);
-    }
+//        return new PlanarYUVLuminanceSource(data, width, height, rect.left, rect.top, rect.width(), rect
+//                .height(), false);
 
+        PlanarYUVLuminanceSource source = null;
+
+//        Point point = configManager.getScreenResolution();
+
+        // 这里需要将获取的data翻转一下，因为相机默认拿的的横屏的数据
+        byte[] rotatedData = new byte[data.length];
+        int newWidth = height;
+        int newHeight = width;
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                rotatedData[x * newWidth + newWidth - 1 - y] = data[x + y * width];
+            }
+            source = new PlanarYUVLuminanceSource(rotatedData, newWidth, newHeight, rect.left, rect.top, rect.width(), rect.height(), false);
+        }
+
+        return source;
+
+    }
 }
