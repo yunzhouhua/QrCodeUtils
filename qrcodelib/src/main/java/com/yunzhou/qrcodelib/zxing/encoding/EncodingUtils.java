@@ -28,22 +28,23 @@ public class EncodingUtils {
     /**
      * 创建二维码
      *
-     * @param content   content
-     * @param widthPix  widthPix
-     * @param heightPix heightPix
-     * @param format    二维码格式
-     * @param logoBm    logoBm
+     * @param content       content
+     * @param widthPix      widthPix
+     * @param heightPix     heightPix
+     * @param format        二维码格式
+     * @param logoBm        logoBm
+     * @param characterSet  编码格式
      * @return 二维码
      */
     public static Bitmap create2DCode(String content, int widthPix, int heightPix, BarcodeFormat format,
-                                      Bitmap logoBm) {
+                                      Bitmap logoBm, String characterSet) {
         try {
             if (content == null || "".equals(content)) {
                 return null;
             }
             // 配置参数
             Map<EncodeHintType, Object> hints = new HashMap<EncodeHintType, Object>();
-            hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
+            hints.put(EncodeHintType.CHARACTER_SET, characterSet);
             // 容错级别
             hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
             // 设置二维码边距
@@ -147,12 +148,22 @@ public class EncodingUtils {
      * @return 二维码
      */
     public static Bitmap createQRCode(String content, int widthPix, int heightPix){
-        return create2DCode(content, widthPix, heightPix, BarcodeFormat.QR_CODE, null);
+        return createQRCode(content, widthPix, heightPix, "UTF-8");
     }
 
-    public static Bitmap createQRCode(Context context, String content, int widthPix, int heightPix, int resId){
+    public static Bitmap createQRCode(String content, int widthPix, int heightPix, String characterSet){
+        return create2DCode(content, widthPix, heightPix, BarcodeFormat.QR_CODE, null, characterSet);
+    }
+
+    public static Bitmap createQRCode(Context context, String content, int widthPix, int heightPix,
+                                      int resId){
+        return createQRCode(context, content, widthPix, heightPix, resId, "UTF-8");
+    }
+
+    public static Bitmap createQRCode(Context context, String content, int widthPix, int heightPix,
+                                      int resId, String characterSet){
         Bitmap logoBitmap = getScaleBitmap(context, resId);
-        return create2DCode(content, widthPix, heightPix, BarcodeFormat.QR_CODE, logoBitmap);
+        return create2DCode(content, widthPix, heightPix, BarcodeFormat.QR_CODE, logoBitmap, characterSet);
     }
 
     /**
@@ -163,12 +174,22 @@ public class EncodingUtils {
      * @return
      */
     public static Bitmap createDataMatrix(String content, int widthPix, int heightPix){
-        return create2DCode(content, widthPix, heightPix, BarcodeFormat.DATA_MATRIX, null);
+        return createDataMatrix(content, widthPix, heightPix, "UTF-8");
     }
 
-    public static Bitmap createDataMatrix(Context context, String content, int widthPix, int heightPix, int resId){
+    public static Bitmap createDataMatrix(String content, int widthPix, int heightPix, String characterSet){
+        return create2DCode(content, widthPix, heightPix, BarcodeFormat.DATA_MATRIX, null, characterSet);
+    }
+
+    public static Bitmap createDataMatrix(Context context, String content, int widthPix, int heightPix,
+                                          int resId){
+        return createDataMatrix(context, content, widthPix, heightPix, resId, "UTF-8");
+    }
+
+    public static Bitmap createDataMatrix(Context context, String content, int widthPix, int heightPix,
+                                          int resId, String characterSet){
         Bitmap logoBitmap = getScaleBitmap(context, resId);
-        return create2DCode(content, widthPix, heightPix, BarcodeFormat.DATA_MATRIX, logoBitmap);
+        return create2DCode(content, widthPix, heightPix, BarcodeFormat.DATA_MATRIX, logoBitmap, characterSet);
     }
 
 
