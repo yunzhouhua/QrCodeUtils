@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -21,10 +22,15 @@ import com.yunzhou.qrcodelib.zxing.activity.CaptureActivity;
 import com.yunzhou.qrcodelib.zxing.decode.DecodeBitmap;
 import com.yunzhou.qrcodelib.zxing.decode.DecodeThread;
 import com.yunzhou.qrcodelib.zxing.encoding.EncodingUtils;
+import com.yunzhou.qrcodelib.zxing.utils.IsChineseOrNot;
+
+import java.io.UnsupportedEncodingException;
 
 import rx.functions.Action1;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+
+    private static final String TAG = "MainActivity";
 
     private TextView mQrResultView;
     private ImageView mQrCodeView;
@@ -133,9 +139,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (resultCode == RESULT_OK) {
             Bundle bundle = data.getExtras();
             String scanResult = bundle.getString("result");
+            try {
+                Log.e(TAG, "utf-8 : " + new String(scanResult.getBytes("ISO-8859-1"), "utf-8"));
+                Log.e(TAG, "GB2312: " + new String(scanResult.getBytes("ISO-8859-1"), "GB2312"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            // 展示文字
+            String GB_Str = "";
+            boolean is_cN = false;
+            String result = null;
+            try {
+                result = new String(scanResult.getBytes("ISO-8859-1"), "UTF-8");
+                is_cN = IsChineseOrNot.isChineseCharacter(result);
+                //防止有人特意使用乱码来生成二维码来判断的情况
+                boolean b = IsChineseOrNot.isSpecialCharacter(scanResult);
+                if (b) {
+                    is_cN = true;
+                }
+//                            System.out.println("是为:"+is_cN);
+                if (!is_cN) {
+                    result = new String(scanResult.getBytes("ISO-8859-1"), "GB2312");
+//                                System.out.println("这是转了GB2312的"+GB_Str);
+                }
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            mQrResultView.setText(result);
+
+            // 展示图片
             byte[] byteResult = bundle.getByteArray(DecodeThread.BARCODE_BITMAP);
             Bitmap bitmap = BitmapFactory.decodeByteArray(byteResult, 0, byteResult.length);
-            mQrResultView.setText(scanResult);
             mQrCodeView.setImageBitmap(bitmap);
         }
     }

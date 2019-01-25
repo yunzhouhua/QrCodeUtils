@@ -22,11 +22,16 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.DecodeHintType;
 import com.google.zxing.Result;
 import com.yunzhou.qrcodelib.R;
 import com.yunzhou.qrcodelib.zxing.IScanQRCode;
 import com.yunzhou.qrcodelib.zxing.camera.CameraManager;
 import com.yunzhou.qrcodelib.zxing.decode.DecodeThread;
+
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * This class handles all the messaging which comprises the state machine for
@@ -41,9 +46,14 @@ public class CaptureActivityHandler extends Handler {
     private final CameraManager cameraManager;
     private State state;
 
-    public CaptureActivityHandler(IScanQRCode activity, CameraManager cameraManager, int decodeMode) {
+    public CaptureActivityHandler(IScanQRCode activity,
+//                                  Collection<BarcodeFormat> decodeFormats,
+                                  Map<DecodeHintType,?> baseHints,
+                                  String characterSet,
+                                  CameraManager cameraManager,
+                                  int decodeMode) {
         this.activity = activity;
-        decodeThread = new DecodeThread(activity, decodeMode);
+        decodeThread = new DecodeThread(activity, baseHints, characterSet, decodeMode);
         decodeThread.start();
         state = State.SUCCESS;
 

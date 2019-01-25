@@ -38,6 +38,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 import com.yunzhou.qrcodelib.R;
 import com.yunzhou.qrcodelib.zxing.IScanQRCode;
@@ -49,6 +50,7 @@ import com.yunzhou.qrcodelib.zxing.utils.InactivityTimer;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.Collection;
 
 /**
  * This activity opens the camera and does the actual scanning on a background
@@ -72,6 +74,7 @@ public class CaptureActivity extends Activity implements
     public static final String SCAN_DESCRIBE = "scan_describe";
     public static final String SCAN_DESCRIBE_COLOR = "scan_describe_color";
     public static final String SCAN_NEED_BEEP = "scan_need_beep";
+    public static final String SCAN_DECODE_CHARSET = "scan_decode_charset";
 
     private RelativeLayout mTitleBarView = null;
     private TextView mTitleView = null;
@@ -95,10 +98,13 @@ public class CaptureActivity extends Activity implements
     private String mScanDescribe;
     private int mScanDescColor;
     private boolean mNeedBeep;
+    private String mDecodeCharSet;
 
 
     private Rect mCropRect = null;
     private boolean isHasSurface = false;
+
+    private String characterSet;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -134,6 +140,10 @@ public class CaptureActivity extends Activity implements
         mScanDescribe = getIntent().getStringExtra(SCAN_DESCRIBE);
         mScanDescColor = getIntent().getIntExtra(SCAN_DESCRIBE_COLOR, Color.WHITE);
         mNeedBeep = getIntent().getBooleanExtra(SCAN_NEED_BEEP, false);
+        mDecodeCharSet = getIntent().getStringExtra(SCAN_DECODE_CHARSET);
+        if(TextUtils.isEmpty(mDecodeCharSet)){
+            mDecodeCharSet = "ISO-8859-1";
+        }
     }
 
     private void initViews() {
@@ -189,6 +199,8 @@ public class CaptureActivity extends Activity implements
         }
 
         inactivityTimer.onResume();
+
+        characterSet = mDecodeCharSet;
 
     }
 
@@ -261,7 +273,7 @@ public class CaptureActivity extends Activity implements
             // Creating the handler starts the preview, which can also throw a
             // RuntimeException.
             if (handler == null) {
-                handler = new CaptureActivityHandler(this, cameraManager, DecodeThread.ALL_MODE);
+                handler = new CaptureActivityHandler(this, null, characterSet, cameraManager, DecodeThread.ALL_MODE);
             }
 
             initCrop();

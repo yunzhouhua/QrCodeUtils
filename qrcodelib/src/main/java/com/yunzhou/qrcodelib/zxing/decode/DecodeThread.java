@@ -21,6 +21,7 @@ import android.os.Looper;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.DecodeHintType;
+import com.google.zxing.ResultPointCallback;
 import com.yunzhou.qrcodelib.zxing.IScanQRCode;
 
 import java.util.ArrayList;
@@ -48,12 +49,20 @@ public class DecodeThread extends Thread {
     private final CountDownLatch handlerInitLatch;
     private Handler handler;
 
-    public DecodeThread(IScanQRCode activity, int decodeMode) {
+    public DecodeThread(IScanQRCode activity,
+//                        Collection<BarcodeFormat> decodeFormats,
+                        Map<DecodeHintType,?> baseHints,
+                        String characterSet,
+//                        ResultPointCallback resultPointCallback,
+                        int decodeMode) {
 
         this.activity = activity;
         handlerInitLatch = new CountDownLatch(1);
 
         hints = new EnumMap<DecodeHintType, Object>(DecodeHintType.class);
+        if(baseHints != null){
+            hints.putAll(baseHints);
+        }
 
         Collection<BarcodeFormat> decodeFormats = new ArrayList<BarcodeFormat>();
         decodeFormats.addAll(EnumSet.of(BarcodeFormat.AZTEC));
@@ -79,6 +88,10 @@ public class DecodeThread extends Thread {
         }
 
         hints.put(DecodeHintType.POSSIBLE_FORMATS, decodeFormats);
+//        hints.put(DecodeHintType.NEED_RESULT_POINT_CALLBACK, resultPointCallback);
+        if(characterSet != null){
+            hints.put(DecodeHintType.CHARACTER_SET, characterSet);
+        }
     }
 
     public Handler getHandler() {
